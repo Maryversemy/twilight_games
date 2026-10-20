@@ -1,0 +1,1704 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Сумеречные Игры — Атмосферная Коллекция</title>
+  <style>
+    :root {
+      --bg-dark: #071317;
+      --bg-card: #0b1e24;
+      --panel-bg: #132a32;
+      --accent-teal: #1b3b48;
+      --accent-cyan: #2e6274;
+      --accent-light: #4d8b9e;
+      --text-muted: #a3c3cd;
+      --text-bright: #e2f0f4;
+      --purple-accent: #8b6b80;
+      --purple-light: #c5b0c2;
+      --gold: #d4af37;
+      --font-title: 'Georgia', 'Times New Roman', serif;
+      --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-bright);
+      font-family: var(--font-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 50% 0%, #1b3b48 0%, transparent 60%),
+        radial-gradient(circle at 80% 100%, #132a32 0%, transparent 50%),
+        radial-gradient(circle at 10% 50%, #0d1e22 0%, transparent 40%);
+    }
+
+    .fog-layer {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse at center, transparent 0%, rgba(7, 19, 23, 0.6) 100%);
+      z-index: 1;
+    }
+
+    header {
+      position: relative;
+      z-index: 10;
+      background: rgba(11, 30, 36, 0.85);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(77, 139, 158, 0.2);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .logo-icon {
+      font-size: 1.8rem;
+      filter: drop-shadow(0 0 8px rgba(197, 176, 194, 0.5));
+    }
+
+    h1 {
+      font-family: var(--font-title);
+      font-size: 1.5rem;
+      font-weight: 300;
+      letter-spacing: 3px;
+      color: var(--text-bright);
+      text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(77, 139, 158, 0.4);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-tag {
+      background: rgba(46, 98, 116, 0.3);
+      border: 1px solid rgba(77, 139, 158, 0.3);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .user-tag strong { color: var(--purple-light); }
+
+    .btn-sound {
+      background: rgba(27, 59, 72, 0.6);
+      border: 1px solid rgba(77, 139, 158, 0.4);
+      color: var(--text-bright);
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-sound:hover {
+      background: var(--accent-cyan);
+      box-shadow: 0 0 10px rgba(77, 139, 158, 0.3);
+    }
+
+    main {
+      position: relative;
+      z-index: 5;
+      flex: 1;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, var(--accent-teal), var(--bg-card));
+      border: 1px solid rgba(77, 139, 158, 0.4);
+      color: var(--text-bright);
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-family: var(--font-main);
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      letter-spacing: 1px;
+    }
+
+    .btn:hover {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-teal));
+      border-color: var(--purple-light);
+      box-shadow: 0 0 12px rgba(197, 176, 194, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(19, 42, 50, 0.6);
+      border: 1px solid rgba(163, 195, 205, 0.3);
+    }
+
+    /* MENU VIEW */
+    #menu-view {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .welcome-panel {
+      background: rgba(11, 30, 36, 0.7);
+      border: 1px solid rgba(77, 139, 158, 0.25);
+      border-radius: 12px;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .welcome-title {
+      font-family: var(--font-title);
+      font-size: 1.8rem;
+      font-weight: 300;
+      color: var(--text-bright);
+      letter-spacing: 2px;
+      text-align: center;
+    }
+
+    .welcome-subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .control-box {
+      background: rgba(19, 42, 50, 0.5);
+      border: 1px solid rgba(77, 139, 158, 0.2);
+      padding: 1.2rem;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .control-box label {
+      font-size: 0.85rem;
+      color: var(--purple-light);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .control-box input[type="text"] {
+      background: rgba(7, 19, 23, 0.7);
+      border: 1px solid rgba(77, 139, 158, 0.4);
+      border-radius: 6px;
+      padding: 10px 14px;
+      color: var(--text-bright);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .control-box input[type="text"]:focus {
+      border-color: var(--purple-light);
+      box-shadow: 0 0 8px rgba(197, 176, 194, 0.2);
+    }
+
+    .difficulty-options {
+      display: flex;
+      gap: 8px;
+    }
+
+    .diff-btn {
+      flex: 1;
+      padding: 8px;
+      background: rgba(7, 19, 23, 0.6);
+      border: 1px solid rgba(77, 139, 158, 0.3);
+      color: var(--text-muted);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .diff-btn.active {
+      background: var(--accent-cyan);
+      color: var(--text-bright);
+      border-color: var(--purple-light);
+      box-shadow: 0 0 10px rgba(77, 139, 158, 0.3);
+    }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .game-card {
+      background: linear-gradient(145deg, rgba(11, 30, 36, 0.8), rgba(19, 42, 50, 0.6));
+      border: 1px solid rgba(77, 139, 158, 0.2);
+      border-radius: 10px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .game-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, transparent, var(--accent-light), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .game-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(197, 176, 194, 0.4);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5), 0 0 15px rgba(77, 139, 158, 0.2);
+    }
+
+    .game-card:hover::before { opacity: 1; }
+
+    .game-icon {
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+      filter: drop-shadow(0 0 5px rgba(77, 139, 158, 0.4));
+    }
+
+    .game-card-title {
+      font-family: var(--font-title);
+      font-size: 1.25rem;
+      letter-spacing: 1px;
+      color: var(--text-bright);
+    }
+
+    .game-card-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .game-card-play {
+      font-size: 0.85rem;
+      color: var(--purple-light);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: 600;
+    }
+
+    /* GAME VIEW STYLES */
+    #game-view {
+      display: none;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(11, 30, 36, 0.8);
+      border: 1px solid rgba(77, 139, 158, 0.2);
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+    }
+
+    .game-title-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .game-active-title {
+      font-family: var(--font-title);
+      font-size: 1.4rem;
+      color: var(--text-bright);
+      letter-spacing: 1px;
+    }
+
+    .game-container {
+      background: rgba(11, 30, 36, 0.85);
+      border: 1px solid rgba(77, 139, 158, 0.25);
+      border-radius: 12px;
+      padding: 2rem;
+      min-height: 450px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    /* GAME 1: MEMORY CARDS */
+    .memory-grid {
+      display: grid;
+      gap: 12px;
+      max-width: 600px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .memory-card {
+      aspect-ratio: 1;
+      background: rgba(19, 42, 50, 0.8);
+      border: 1px solid rgba(77, 139, 158, 0.3);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.3s, background-color 0.3s;
+    }
+
+    .memory-card.flipped {
+      background: var(--accent-cyan);
+      border-color: var(--purple-light);
+      transform: rotateY(180deg);
+    }
+
+    .memory-card.matched {
+      background: rgba(139, 107, 128, 0.4);
+      border-color: var(--purple-light);
+      cursor: default;
+      opacity: 0.7;
+    }
+
+    /* GAME 2: GUESS NUMBER */
+    .guess-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    .guess-input {
+      width: 100%;
+      padding: 12px;
+      font-size: 1.5rem;
+      text-align: center;
+      background: rgba(7, 19, 23, 0.8);
+      border: 1px solid var(--accent-light);
+      color: var(--text-bright);
+      border-radius: 6px;
+    }
+
+    .guess-feedback {
+      font-size: 1.1rem;
+      color: var(--purple-light);
+      min-height: 2rem;
+      text-align: center;
+    }
+
+    /* GAME 3: 15 PUZZLE */
+    .puzzle-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      width: 320px;
+      height: 320px;
+    }
+
+    .puzzle-tile {
+      background: var(--panel-bg);
+      border: 1px solid var(--accent-light);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      font-family: var(--font-title);
+      color: var(--text-bright);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+
+    .puzzle-tile.empty {
+      background: transparent;
+      border: none;
+      cursor: default;
+    }
+
+    /* GAME 4: SUDOKU */
+    .sudoku-board {
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      gap: 1px;
+      background: var(--accent-light);
+      border: 2px solid var(--accent-light);
+      width: 100%;
+      max-width: 380px;
+      aspect-ratio: 1;
+    }
+
+    .sudoku-cell {
+      background: var(--bg-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      font-family: var(--font-title);
+      color: var(--text-bright);
+    }
+
+    .sudoku-cell input {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: transparent;
+      text-align: center;
+      font-size: 1.1rem;
+      color: var(--purple-light);
+      outline: none;
+    }
+
+    .sudoku-cell.fixed {
+      background: rgba(27, 59, 72, 0.5);
+      font-weight: bold;
+    }
+
+    /* GAME 5: QUIZ */
+    .quiz-container {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .quiz-question {
+      font-size: 1.2rem;
+      color: var(--text-bright);
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .quiz-opt-btn {
+      background: rgba(19, 42, 50, 0.6);
+      border: 1px solid rgba(77, 139, 158, 0.3);
+      padding: 12px 18px;
+      border-radius: 6px;
+      color: var(--text-bright);
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quiz-opt-btn:hover {
+      background: var(--accent-cyan);
+      border-color: var(--purple-light);
+    }
+
+    /* GAME 6: WHEEL OF FORTUNE */
+    .wheel-game {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .wheel-canvas {
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      border: 4px solid var(--accent-light);
+      box-shadow: 0 0 20px rgba(77, 139, 158, 0.3);
+      transition: transform 3s cubic-bezier(0.15, 0.85, 0.35, 1.2);
+    }
+
+    .word-display {
+      display: flex;
+      gap: 8px;
+      font-size: 2rem;
+      font-family: var(--font-title);
+      letter-spacing: 4px;
+    }
+
+    .letter-box {
+      width: 36px;
+      height: 48px;
+      border-bottom: 2px solid var(--purple-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .keyboard-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+      max-width: 500px;
+    }
+
+    .key-btn {
+      width: 32px;
+      height: 36px;
+      background: rgba(19, 42, 50, 0.8);
+      border: 1px solid rgba(77, 139, 158, 0.3);
+      color: var(--text-bright);
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .key-btn:disabled {
+      opacity: 0.3;
+      cursor: default;
+    }
+
+    /* GAME 7: MILLIONAIRE */
+    .millionaire-box {
+      width: 100%;
+      max-width: 650px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .lifelines {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .lifeline-btn {
+      background: rgba(139, 107, 128, 0.3);
+      border: 1px solid var(--purple-light);
+      color: var(--purple-light);
+      padding: 6px 12px;
+      border-radius: 15px;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .lifeline-btn:disabled {
+      opacity: 0.3;
+      border-color: var(--text-muted);
+      color: var(--text-muted);
+      cursor: default;
+    }
+
+    /* GAME 8: JEOPARDY / SVEYA IGRA */
+    .jeopardy-board {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      width: 100%;
+      max-width: 750px;
+    }
+
+    .jeopardy-category {
+      background: var(--accent-teal);
+      padding: 10px 4px;
+      font-size: 0.8rem;
+      text-align: center;
+      font-weight: bold;
+      border-radius: 4px;
+      color: var(--text-bright);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 45px;
+    }
+
+    .jeopardy-cell {
+      background: rgba(19, 42, 50, 0.9);
+      border: 1px solid rgba(77, 139, 158, 0.3);
+      color: var(--gold);
+      font-family: var(--font-title);
+      font-size: 1.2rem;
+      height: 55px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .jeopardy-cell:hover:not(.played) {
+      background: var(--accent-cyan);
+      box-shadow: 0 0 10px rgba(77, 139, 158, 0.4);
+    }
+
+    .jeopardy-cell.played {
+      background: rgba(7, 19, 23, 0.5);
+      color: rgba(163, 195, 205, 0.2);
+      border-color: transparent;
+      cursor: default;
+    }
+
+    /* MODAL FOR JEOPARDY QUESTION */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(7, 19, 23, 0.85);
+      backdrop-filter: blur(5px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-content {
+      background: var(--bg-card);
+      border: 1px solid var(--purple-light);
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      position: relative;
+    }
+
+    .modal-question {
+      font-size: 1.1rem;
+      color: var(--text-bright);
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .modal-answers {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .modal-ans-btn {
+      background: rgba(19, 42, 50, 0.7);
+      border: 1px solid rgba(77, 139, 158, 0.3);
+      color: var(--text-bright);
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .modal-ans-btn:hover {
+      background: var(--accent-cyan);
+    }
+
+    /* CERTIFICATE MODAL */
+    .certificate-box {
+      background: linear-gradient(135deg, #0b1e24 0%, #132a32 100%);
+      border: 4px double var(--purple-light);
+      padding: 2.5rem;
+      text-align: center;
+      color: var(--text-bright);
+      border-radius: 8px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.8);
+      position: relative;
+    }
+
+    .certificate-title {
+      font-family: var(--font-title);
+      font-size: 1.8rem;
+      color: var(--purple-light);
+      margin-bottom: 0.5rem;
+      letter-spacing: 2px;
+    }
+
+    .certificate-name {
+      font-family: var(--font-title);
+      font-size: 2rem;
+      color: var(--gold);
+      margin: 1rem 0;
+      border-bottom: 1px solid var(--purple-light);
+      display: inline-block;
+      padding: 0 1rem;
+    }
+
+    .certificate-text {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+
+    @media print {
+      body * { visibility: hidden; }
+      #certificate-modal, #certificate-modal * { visibility: visible; }
+      #certificate-modal { position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: #fff; color: #000; }
+      .certificate-box { border: 4px double #000; background: #fff; color: #000; }
+      .certificate-title, .certificate-name { color: #000; }
+      .certificate-text { color: #333; }
+      .modal-actions { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="fog-layer"></div>
+
+  <header>
+    <div class="logo-container" id="btn-home">
+      <span class="logo-icon">🌲</span>
+      <h1>Туманный Лес</h1>
+    </div>
+    <div class="header-actions">
+      <div class="user-tag" id="header-user-display">Игрок: <strong id="header-user-name">Гость</strong></div>
+      <button class="btn-sound" id="toggle-sound">
+        <span id="sound-icon">🔊</span> Звук
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- MENU VIEW -->
+    <section id="menu-view">
+      <div class="welcome-panel">
+        <h2 class="welcome-title">Свод Загадок Ночного Леса</h2>
+        <p class="welcome-subtitle">
+          Добро пожаловать в туманные чащи. Выберите испытание, настройте сложность и впишите своё имя для получения Ордена Почётного Путешественника.
+        </p>
+
+        <div class="controls-grid">
+          <div class="control-box">
+            <label for="player-name-input">Ваше Имя:</label>
+            <input type="text" id="player-name-input" placeholder="Введите ваше имя..." maxlength="25">
+          </div>
+
+          <div class="control-box">
+            <label>Уровень Сложности:</label>
+            <div class="difficulty-options">
+              <button class="diff-btn active" data-diff="easy">Человек</button>
+              <button class="diff-btn" data-diff="medium">Охотник</button>
+              <button class="diff-btn" data-diff="hard">Дух Леса</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="games-grid">
+        <div class="game-card" data-game="memory">
+          <div>
+            <div class="game-icon">🔮</div>
+            <div class="game-card-title">Найди Совпадение</div>
+            <p class="game-card-desc">Открывайте карты и находите одинаковые рунические знаки и символы природы.</p>
+          </div>
+          <div class="game-card-play">Испытать ➔</div>
+        </div>
+
+        <div class="game-card" data-game="guess">
+          <div>
+            <div class="game-icon">🌙</div>
+            <div class="game-card-title">Угадай Число</div>
+            <p class="game-card-desc">Расшифруйте тайное число леса за минимальное количество попыток.</p>
+          </div>
+          <div class="game-card-play">Испытать ➔</div>
+        </div>
+
+        <div class="game-card" data-game="puzzle">
+          <div>
+            <div class="game-icon">🧩</div>
+            <div class="game-card-title">Пятнашки</div>
+            <p class="game-card-desc">Расставьте древние каменные плиты в правильном порядке.</p>
+          </div>
+          <div class="game-card-play">Испытать ➔</div>
+        </div>
+
+        <div class="game-card" data-game="sudoku">
+          <div>
+            <div class="game-icon">📜</div>
+            <div class="game-card-title">Судоку</div>
+            <p class="game-card-desc">Заполните числовую магическую сетку без повторений в рядах.</p>
+          </div>
+          <div class="game-card-play">Испытать ➔</div>
+        </div>
+
+        <div class="game-card" data-game="quiz">
+          <div>
+            <div class="game-icon">🕯️</div>
+            <div class="game-card-title">Викторина</div>
+            <p class="game-card-desc">Проверьте свои знания о тайнах природы и ночных явлениях.</p>
+          </div>
+          <div class="game-card-play">Испытать ➔</div>
+        </div>
+
+        <div class="game-card" data-game="wheel">
+          <div>
+            <div class="game-icon">🎡</div>
+            <div class="game-card-title">Поле Чудес</div>
+            <p class="game-card-desc">Вращайте колесо судьбы и угадывайте зашифрованные слова по буквам.</p>
+          </div>
+          <div class="game-card-play">Испытать ➔</div>
+        </div>
+
+        <div class="game-card" data-game="millionaire">
+          <div>
+            <div class="game-icon">💎</div>
+            <div class="game-card-title">Миллионер</div>
+            <p class="game-card-desc">Ответьте на 15 вопросов, используйте подсказки и заберите главный приз.</p>
+          </div>
+          <div class="game-card-play">Испытать ➔</div>
+        </div>
+
+        <div class="game-card" data-game="jeopardy">
+          <div>
+            <div class="game-icon">🏛️</div>
+            <div class="game-card-title">Своя Игра</div>
+            <p class="game-card-desc">Интерактивная викторина с выбором категорий и стоимости вопросов.</p>
+          </div>
+          <div class="game-card-play">Испытать ➔</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GAME VIEW -->
+    <section id="game-view">
+      <div class="game-header">
+        <div class="game-title-container">
+          <button class="btn btn-secondary" id="btn-back">⬅ В Главное Меню</button>
+          <span class="game-active-title" id="active-game-title">Название Игры</span>
+        </div>
+        <button class="btn" id="btn-restart">Заново 🔄</button>
+      </div>
+
+      <div class="game-container" id="game-container">
+        <!-- Game Content Injected via JS -->
+      </div>
+    </section>
+  </main>
+
+  <!-- MODALS CONTAINER -->
+  <div id="modal-container"></div>
+
+  <script>
+    /* ================= AUDIO ENGINE (MEME + VIBE SOUNDS) ================= */
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+      }
+
+      init() {
+        if (!this.ctx) {
+          this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+      }
+
+      playClick() {
+        if (!this.enabled) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(400, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.08);
+      }
+
+      // Vine Boom (Мемный драматический бас)
+      playVineBoom() {
+        if (!this.enabled) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.exponentialRampToValueAtTime(30, now + 0.8);
+
+        gain.gain.setValueAtTime(0.8, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.8);
+      }
+
+      // Sparkle / Shine (Сияние при победе)
+      playSparkle() {
+        if (!this.enabled) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        [523.25, 659.25, 783.99, 1046.50, 1318.51].forEach((freq, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + i * 0.06);
+          gain.gain.setValueAtTime(0.15, now + i * 0.06);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.06 + 0.3);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + i * 0.06);
+          osc.stop(now + i * 0.06 + 0.3);
+        });
+      }
+
+      // Sad Trombone / Fail (Мемный проигрыш)
+      playFail() {
+        if (!this.enabled) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const freqs = [293.66, 277.18, 261.63, 246.94];
+        freqs.forEach((freq, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(freq, now + i * 0.2);
+          gain.gain.setValueAtTime(0.2, now + i * 0.2);
+          gain.gain.linearRampToValueAtTime(0.01, now + i * 0.2 + 0.25);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + i * 0.2);
+          osc.stop(now + i * 0.2 + 0.25);
+        });
+      }
+
+      // Oof sound
+      playOof() {
+        if (!this.enabled) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(180, now);
+        osc.frequency.exponentialRampToValueAtTime(60, now + 0.15);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.15);
+      }
+    }
+
+    const sounds = new SoundEngine();
+
+    /* ================= STATE MANAGEMENT ================= */
+    const state = {
+      playerName: localStorage.getItem('twilight_player_name') || 'Искатель Тайн',
+      difficulty: 'easy', // easy, medium, hard
+      currentGame: null
+    };
+
+    // DOM Elements
+    const nameInput = document.getElementById('player-name-input');
+    const headerUserName = document.getElementById('header-user-name');
+    const menuView = document.getElementById('menu-view');
+    const gameView = document.getElementById('game-view');
+    const gameContainer = document.getElementById('game-container');
+    const activeGameTitle = document.getElementById('active-game-title');
+    const btnHome = document.getElementById('btn-home');
+    const btnBack = document.getElementById('btn-back');
+    const btnRestart = document.getElementById('btn-restart');
+    const soundBtn = document.getElementById('toggle-sound');
+    const soundIcon = document.getElementById('sound-icon');
+    const modalContainer = document.getElementById('modal-container');
+
+    // Init Name
+    nameInput.value = state.playerName === 'Искатель Тайн' ? '' : state.playerName;
+    headerUserName.textContent = state.playerName;
+
+    nameInput.addEventListener('input', (e) => {
+      const val = e.target.value.trim() || 'Искатель Тайн';
+      state.playerName = val;
+      headerUserName.textContent = val;
+      localStorage.setItem('twilight_player_name', val);
+    });
+
+    // Difficulty buttons
+    document.querySelectorAll('.diff-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        sounds.playClick();
+        document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.difficulty = btn.dataset.diff;
+      });
+    });
+
+    // Sound toggle
+    soundBtn.addEventListener('click', () => {
+      sounds.enabled = !sounds.enabled;
+      soundIcon.textContent = sounds.enabled ? '🔊' : '🔇';
+      sounds.playClick();
+    });
+
+    // Navigation
+    btnHome.addEventListener('click', showMenu);
+    btnBack.addEventListener('click', showMenu);
+    btnRestart.addEventListener('click', () => {
+      sounds.playClick();
+      if (state.currentGame && GameModules[state.currentGame]) {
+        GameModules[state.currentGame].init();
+      }
+    });
+
+    document.querySelectorAll('.game-card').forEach(card => {
+      card.addEventListener('click', () => {
+        sounds.playClick();
+        const gameKey = card.dataset.game;
+        launchGame(gameKey);
+      });
+    });
+
+    function showMenu() {
+      sounds.playClick();
+      gameView.style.display = 'none';
+      menuView.style.display = 'flex';
+      gameContainer.innerHTML = '';
+      state.currentGame = null;
+    }
+
+    function launchGame(gameKey) {
+      state.currentGame = gameKey;
+      menuView.style.display = 'none';
+      gameView.style.display = 'flex';
+      
+      if (GameModules[gameKey]) {
+        activeGameTitle.textContent = GameModules[gameKey].title;
+        GameModules[gameKey].init();
+      }
+    }
+
+    function showCertificate(gameName, scoreDetail = '') {
+      sounds.playSparkle();
+      modalContainer.innerHTML = `
+        <div class="modal-overlay" id="certificate-modal">
+          <div class="certificate-box">
+            <div class="certificate-title">📜 Почётный Сертификат</div>
+            <p>Настоящим подтверждается, что</p>
+            <div class="certificate-name">${escapeHtml(state.playerName)}</div>
+            <p class="certificate-text">
+              Успешно прошёл(ла) испытание <strong>«${gameName}»</strong> в ночных чащах туманного леса.<br>
+              Уровень сложности: <strong>${getDifficultyLabel()}</strong>.<br>
+              ${scoreDetail ? `Достижение: <strong>${scoreDetail}</strong>` : ''}
+            </p>
+            <div style="display:flex; gap:10px; justify-content:center;" class="modal-actions">
+              <button class="btn" onclick="window.print()">Распечатать 🖨️</button>
+              <button class="btn btn-secondary" onclick="closeModal()">Закрыть</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function closeModal() {
+      sounds.playClick();
+      modalContainer.innerHTML = '';
+    }
+
+    function getDifficultyLabel() {
+      if (state.difficulty === 'easy') return 'Человек';
+      if (state.difficulty === 'medium') return 'Охотник';
+      return 'Дух Леса';
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+      })[m]);
+    }
+
+
+    /* ================= GAME MODULES ================= */
+    const GameModules = {};
+
+    /* --- GAME 1: MEMORY CARDS --- */
+    GameModules.memory = {
+      title: 'Найди Совпадение',
+      symbols: ['🌲', '🌙', '🐺', '🔮', '🕯️', '🗡️', '🦉', '❄️'],
+      init() {
+        let count = state.difficulty === 'easy' ? 4 : state.difficulty === 'medium' ? 6 : 8;
+        let selected = this.symbols.slice(0, count);
+        let cards = [...selected, ...selected].sort(() => Math.random() - 0.5);
+        
+        let flipped = [];
+        let matched = 0;
+        let moves = 0;
+
+        gameContainer.innerHTML = `
+          <div style="margin-bottom:1rem; color:var(--text-muted)">Ходов: <span id="mem-moves">0</span></div>
+          <div class="memory-grid" style="grid-template-columns: repeat(${count <= 4 ? 4 : 4}, 1fr)">
+            ${cards.map((sym, i) => `<div class="memory-card" data-index="${i}" data-sym="${sym}">❓</div>`).join('')}
+          </div>
+        `;
+
+        const cardElements = gameContainer.querySelectorAll('.memory-card');
+        cardElements.forEach(card => {
+          card.addEventListener('click', () => {
+            if (flipped.length === 2 || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+
+            sounds.playClick();
+            card.classList.add('flipped');
+            card.textContent = card.dataset.sym;
+            flipped.push(card);
+
+            if (flipped.length === 2) {
+              moves++;
+              document.getElementById('mem-moves').textContent = moves;
+
+              if (flipped[0].dataset.sym === flipped[1].dataset.sym) {
+                sounds.playSparkle();
+                flipped[0].classList.add('matched');
+                flipped[1].classList.add('matched');
+                flipped = [];
+                matched++;
+                if (matched === count) {
+                  setTimeout(() => showCertificate('Найди Совпадение', `Ходов: ${moves}`), 600);
+                }
+              } else {
+                sounds.playOof();
+                setTimeout(() => {
+                  flipped[0].classList.remove('flipped');
+                  flipped[1].classList.remove('flipped');
+                  flipped[0].textContent = '❓';
+                  flipped[1].textContent = '❓';
+                  flipped = [];
+                }, 900);
+              }
+            }
+          });
+        });
+      }
+    };
+
+    /* --- GAME 2: GUESS NUMBER --- */
+    GameModules.guess = {
+      title: 'Угадай Число',
+      init() {
+        const max = state.difficulty === 'easy' ? 50 : state.difficulty === 'medium' ? 100 : 200;
+        const target = Math.floor(Math.random() * max) + 1;
+        let attempts = 0;
+
+        gameContainer.innerHTML = `
+          <div class="guess-box">
+            <p style="color:var(--text-muted); text-align:center;">
+              Древние духи загадали число от 1 до <strong>${max}</strong>.<br>Попробуйте отгадать его.
+            </p>
+            <input type="number" id="guess-input" class="guess-input" placeholder="Введите число..." min="1" max="${max}">
+            <button class="btn" id="btn-guess-submit">Проверить</button>
+            <div id="guess-feedback" class="guess-feedback"></div>
+          </div>
+        `;
+
+        const input = document.getElementById('guess-input');
+        const feedback = document.getElementById('guess-feedback');
+        const submit = document.getElementById('btn-guess-submit');
+
+        const checkGuess = () => {
+          const val = parseInt(input.value);
+          if (!val) return;
+          attempts++;
+
+          if (val === target) {
+            sounds.playSparkle();
+            feedback.textContent = `Победа! Вы отгадали число ${target}!`;
+            setTimeout(() => showCertificate('Угадай Число', `Попыток: ${attempts}`), 800);
+          } else if (val < target) {
+            sounds.playVineBoom();
+            feedback.textContent = '🌙 Загаданное число БОЛЬШЕ...';
+          } else {
+            sounds.playVineBoom();
+            feedback.textContent = '🌲 Загаданное число МЕНЬШЕ...';
+          }
+          input.value = '';
+          input.focus();
+        };
+
+        submit.addEventListener('click', checkGuess);
+        input.addEventListener('keypress', (e) => { if (e.key === 'Enter') checkGuess(); });
+      }
+    };
+
+    /* --- GAME 3: 15 PUZZLE --- */
+    GameModules.puzzle = {
+      title: 'Пятнашки',
+      init() {
+        let tiles = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0];
+        
+        // Shuffle solvable
+        for (let i = 0; i < 100; i++) {
+          const emptyIdx = tiles.indexOf(0);
+          const validMoves = [];
+          if (emptyIdx % 4 > 0) validMoves.push(emptyIdx - 1);
+          if (emptyIdx % 4 < 3) validMoves.push(emptyIdx + 1);
+          if (emptyIdx >= 4) validMoves.push(emptyIdx - 4);
+          if (emptyIdx < 12) validMoves.push(emptyIdx + 4);
+          const randMove = validMoves[Math.floor(Math.random() * validMoves.length)];
+          [tiles[emptyIdx], tiles[randMove]] = [tiles[randMove], tiles[emptyIdx]];
+        }
+
+        const render = () => {
+          gameContainer.innerHTML = `
+            <div class="puzzle-grid">
+              ${tiles.map((val, idx) => `
+                <div class="puzzle-tile ${val === 0 ? 'empty' : ''}" data-idx="${idx}">
+                  ${val !== 0 ? val : ''}
+                </div>
+              `).join('')}
+            </div>
+          `;
+
+          gameContainer.querySelectorAll('.puzzle-tile').forEach(tile => {
+            tile.addEventListener('click', () => {
+              const idx = parseInt(tile.dataset.idx);
+              const emptyIdx = tiles.indexOf(0);
+              
+              const isAdjacent = (
+                (Math.abs(idx - emptyIdx) === 1 && Math.floor(idx / 4) === Math.floor(emptyIdx / 4)) ||
+                Math.abs(idx - emptyIdx) === 4
+              );
+
+              if (isAdjacent) {
+                sounds.playClick();
+                [tiles[idx], tiles[emptyIdx]] = [tiles[emptyIdx], tiles[idx]];
+                render();
+                checkWin();
+              } else {
+                sounds.playOof();
+              }
+            });
+          });
+        };
+
+        const checkWin = () => {
+          const isWin = tiles.slice(0, 15).every((val, i) => val === i + 1);
+          if (isWin) {
+            setTimeout(() => showCertificate('Пятнашки', 'Древняя плита собрана'), 300);
+          }
+        };
+
+        render();
+      }
+    };
+
+    /* --- GAME 4: SUDOKU --- */
+    GameModules.sudoku = {
+      title: 'Судоку',
+      init() {
+        const boardPattern = [
+          [5,3,4,6,7,8,9,1,2],
+          [6,7,2,1,9,5,3,4,8],
+          [1,9,8,3,4,2,5,6,7],
+          [8,5,9,7,6,1,4,2,3],
+          [4,2,6,8,5,3,7,9,1],
+          [7,1,3,9,2,4,8,5,6],
+          [9,6,1,5,3,7,2,8,4],
+          [2,8,7,4,1,9,6,3,5],
+          [3,4,5,2,8,6,1,7,9]
+        ];
+
+        const removeCount = state.difficulty === 'easy' ? 25 : state.difficulty === 'medium' ? 40 : 55;
+        let userBoard = boardPattern.map(row => [...row]);
+
+        // Hide cells
+        let removed = 0;
+        while (removed < removeCount) {
+          let r = Math.floor(Math.random() * 9);
+          let c = Math.floor(Math.random() * 9);
+          if (userBoard[r][c] !== 0) {
+            userBoard[r][c] = 0;
+            removed++;
+          }
+        }
+
+        gameContainer.innerHTML = `
+          <div style="display:flex; flex-direction:column; align-items:center; gap:1rem;">
+            <div class="sudoku-board">
+              ${userBoard.map((row, r) => row.map((val, c) => `
+                <div class="sudoku-cell ${val !== 0 ? 'fixed' : ''}">
+                  ${val !== 0 ? val : `<input type="number" min="1" max="9" data-r="${r}" data-c="${c}">`}
+                </div>
+              `).join('')).join('')}
+            </div>
+            <button class="btn" id="btn-check-sudoku">Проверить Решение</button>
+          </div>
+        `;
+
+        gameContainer.querySelectorAll('input').forEach(inp => {
+          inp.addEventListener('input', (e) => {
+            if (e.target.value.length > 1) e.target.value = e.target.value.slice(0, 1);
+          });
+        });
+
+        document.getElementById('btn-check-sudoku').addEventListener('click', () => {
+          let correct = true;
+          const inputs = gameContainer.querySelectorAll('input');
+          inputs.forEach(inp => {
+            const r = inp.dataset.r;
+            const c = inp.dataset.c;
+            const val = parseInt(inp.value);
+            if (val !== boardPattern[r][c]) {
+              correct = false;
+            }
+          });
+
+          if (correct) {
+            sounds.playSparkle();
+            showCertificate('Судоку', 'Магический квадрат разгадан');
+          } else {
+            sounds.playFail();
+            alert('В решении есть ошибки. Попробуйте еще раз!');
+          }
+        });
+      }
+    };
+
+    /* --- GAME 5: QUIZ --- */
+    GameModules.quiz = {
+      title: 'Викторина Леса',
+      questions: [
+        { q: "Какое явление чаще всего окутывает вечные северные леса?", opts: ["Густой Туман", "Песчаная буря", "Тропический зной", "Засуха"], correct: 0 },
+        { q: "Какое небесное светило традиционно связывают с ночными превращениями?", opts: ["Солнце", "Полнолуние", "Комета", "Северное сияние"], correct: 1 },
+        { q: "Какое дерево считается древним символом стойкости в северных чащах?", opts: ["Пальма", "Вековая Ель", "Баобаб", "Эвкалипт"], correct: 1 },
+        { q: "Что издает характерный треск в тишине ночного костра?", opts: ["Сухие еловые ветви", "Речная галька", "Лесной мох", "Озерная вода"], correct: 0 }
+      ],
+      init() {
+        let current = 0;
+        let score = 0;
+
+        const render = () => {
+          const q = this.questions[current];
+          gameContainer.innerHTML = `
+            <div class="quiz-container">
+              <div style="color:var(--text-muted); text-align:center;">Вопрос ${current + 1} из ${this.questions.length}</div>
+              <div class="quiz-question">${q.q}</div>
+              <div class="quiz-options">
+                ${q.opts.map((opt, i) => `<button class="quiz-opt-btn" data-idx="${i}">${opt}</button>`).join('')}
+              </div>
+            </div>
+          `;
+
+          gameContainer.querySelectorAll('.quiz-opt-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const idx = parseInt(btn.dataset.idx);
+              if (idx === q.correct) {
+                sounds.playSparkle();
+                score++;
+              } else {
+                sounds.playOof();
+              }
+
+              current++;
+              if (current < this.questions.length) {
+                render();
+              } else {
+                setTimeout(() => showCertificate('Викторина Леса', `Правильно отвечено: ${score} из ${this.questions.length}`), 500);
+              }
+            });
+          });
+        };
+
+        render();
+      }
+    };
+
+    /* --- GAME 6: WHEEL OF FORTUNE --- */
+    GameModules.wheel = {
+      title: 'Поле Чудес',
+      words: ["ТУМАН", "СУМЕРКИ", "ПОЛНОЛУНИЕ", "ШОРОХ", "ЛЕГЕНДА"],
+      init() {
+        const targetWord = this.words[Math.floor(Math.random() * this.words.length)];
+        let guessed = new Set();
+        let spinning = false;
+        let currentSector = "???";
+
+        const alphabet = "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ".split("");
+
+        const render = () => {
+          gameContainer.innerHTML = `
+            <div class="wheel-game">
+              <div style="position:relative;">
+                <canvas id="wheel-canvas" width="260" height="260" class="wheel-canvas"></canvas>
+                <div style="position:absolute; top:-10px; left:50%; transform:translateX(-50%); font-size:1.5rem;">▼</div>
+              </div>
+              <button class="btn" id="btn-spin">Вращать Барабан 🎡</button>
+              <div style="color:var(--purple-light); font-size:1.1rem;">Сектор: <strong id="sector-display">${currentSector}</strong></div>
+              <div class="word-display">
+                ${targetWord.split('').map(l => `<div class="letter-box">${guessed.has(l) ? l : ''}</div>`).join('')}
+              </div>
+              <div class="keyboard-grid">
+                ${alphabet.map(l => `<button class="key-btn" data-key="${l}" ${guessed.has(l) ? 'disabled' : ''}>${l}</button>`).join('')}
+              </div>
+            </div>
+          `;
+
+          drawWheel();
+
+          document.getElementById('btn-spin').addEventListener('click', () => {
+            if (spinning) return;
+            sounds.playClick();
+            spinning = true;
+            const canvas = document.getElementById('wheel-canvas');
+            const randDeg = 1440 + Math.floor(Math.random() * 360);
+            canvas.style.transform = `rotate(${randDeg}deg)`;
+
+            setTimeout(() => {
+              spinning = false;
+              const sectors = ["100 Очков", "200 Очков", "300 Очков", "Сектор ПРИЗ", "500 Очков", "ПЛЮС"];
+              currentSector = sectors[Math.floor(Math.random() * sectors.length)];
+              document.getElementById('sector-display').textContent = currentSector;
+              sounds.playSparkle();
+            }, 3000);
+          });
+
+          gameContainer.querySelectorAll('.key-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const letter = btn.dataset.key;
+              sounds.playClick();
+              guessed.add(letter);
+              render();
+
+              const win = targetWord.split('').every(l => guessed.has(l));
+              if (win) {
+                setTimeout(() => showCertificate('Поле Чудес', `Слово: ${targetWord}`), 500);
+              }
+            });
+          });
+        };
+
+        const drawWheel = () => {
+          const cvs = document.getElementById('wheel-canvas');
+          if (!cvs) return;
+          const ctx = cvs.getContext('2d');
+          const colors = ['#1b3b48', '#2e6274', '#132a32', '#4d8b9e', '#8b6b80', '#0b1e24'];
+          const total = colors.length;
+          const arc = (Math.PI * 2) / total;
+
+          for (let i = 0; i < total; i++) {
+            ctx.beginPath();
+            ctx.fillStyle = colors[i];
+            ctx.moveTo(130, 130);
+            ctx.arc(130, 130, 130, i * arc, (i + 1) * arc);
+            ctx.fill();
+            ctx.stroke();
+          }
+        };
+
+        render();
+      }
+    };
+
+    /* --- GAME 7: MILLIONAIRE --- */
+    GameModules.millionaire = {
+      title: 'Кто хочет стать Миллионером',
+      questions: [
+        { q: "Что чаще всего покрывает густые северные сосновые боры по утрам?", opts: ["Утренний Туман", "Вулканический пепел", "Тропический ливень", "Сухой смог"], correct: 0 },
+        { q: "Как называется время суток сразу после захода солнца?", opts: ["Полдень", "Сумерки", "Рассвет", "Зенит"], correct: 1 },
+        { q: "Какое животное традиционно считают ночным хозяином тайги?", opts: ["Волк", "Жираф", "Кенгуру", "Фламинго"], correct: 0 }
+      ],
+      init() {
+        let current = 0;
+        let lifelines = { f50: true, audience: true };
+
+        const render = () => {
+          const q = this.questions[current];
+          gameContainer.innerHTML = `
+            <div class="millionaire-box">
+              <div class="lifelines">
+                <button class="lifeline-btn" id="life-50" ${!lifelines.f50 ? 'disabled' : ''}>50:50</button>
+                <button class="lifeline-btn" id="life-aud" ${!lifelines.audience ? 'disabled' : ''}>Шорох Леса 🌲</button>
+              </div>
+              <div style="text-align:center; color:var(--gold); font-family:var(--font-title); font-size:1.2rem;">Вопрос №${current + 1}</div>
+              <div class="quiz-question">${q.q}</div>
+              <div class="quiz-options">
+                ${q.opts.map((opt, i) => `<button class="quiz-opt-btn" id="m-opt-${i}" data-idx="${i}">${opt}</button>`).join('')}
+              </div>
+            </div>
+          `;
+
+          document.getElementById('life-50').addEventListener('click', () => {
+            if (!lifelines.f50) return;
+            sounds.playClick();
+            lifelines.f50 = false;
+            let removed = 0;
+            q.opts.forEach((_, i) => {
+              if (i !== q.correct && removed < 2) {
+                const btn = document.getElementById(`m-opt-${i}`);
+                if (btn) btn.style.visibility = 'hidden';
+                removed++;
+              }
+            });
+            document.getElementById('life-50').disabled = true;
+          });
+
+          document.getElementById('life-aud').addEventListener('click', () => {
+            if (!lifelines.audience) return;
+            sounds.playClick();
+            lifelines.audience = false;
+            alert(`🌲 Духи леса шепчут, что правильный вариант похоже: "${q.opts[q.correct]}"`);
+            document.getElementById('life-aud').disabled = true;
+          });
+
+          gameContainer.querySelectorAll('.quiz-opt-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const idx = parseInt(btn.dataset.idx);
+              if (idx === q.correct) {
+                sounds.playSparkle();
+                current++;
+                if (current < this.questions.length) {
+                  render();
+                } else {
+                  showCertificate('Кто хочет стать Миллионером', 'Главный приз: 1 000 000 Очков Леса');
+                }
+              } else {
+                sounds.playFail();
+                alert('Неверно! Игра окончена.');
+                showMenu();
+              }
+            });
+          });
+        };
+
+        render();
+      }
+    };
+
+    /* --- GAME 8: JEOPARDY / SVEYA IGRA --- */
+    GameModules.jeopardy = {
+      title: 'Своя Игра',
+      categories: ["Глушь и Туман", "Тайны Ночи", "Забытые Легенды", "Загадки Природы", "Лесные Тропы"],
+      questions: {
+        "Глушь и Туман": [
+          { val: 100, q: "Как называется видимое скопление капель воды в воздухе у земли?", opts: ["Туман", "Дымка", "Смог"], correct: 0 },
+          { val: 200, q: "Какой цвет преобладает в мрачных хвойных лесах?", opts: ["Изумрудно-темный", "Алый", "Ярко-желтый"], correct: 0 }
+        ],
+        "Тайны Ночи": [
+          { val: 100, q: "Фаза луны, когда она видна полностью?", opts: ["Полнолуние", "Новолуние", "Затмение"], correct: 0 },
+          { val: 200, q: "Птица, активная преимущественно ночью?", opts: ["Сова", "Ласточка", "Воробей"], correct: 0 }
+        ],
+        "Забытые Легенды": [
+          { val: 100, q: "Мифическое существо, охраняющее лес в преданиях?", opts: ["Леший / Дух Леса", "Гриф", "Сфинкс"], correct: 0 },
+          { val: 200, q: "Какое природное явление считали проявлением гнева богов?", opts: ["Гроза", "Радуга", "Роса"], correct: 0 }
+        ],
+        "Загадки Природы": [
+          { val: 100, q: "Какое растение указывает север своими ветвями и мохом?", opts: ["Дерево с мохом", "Кактус", "Водоросли"], correct: 0 },
+          { val: 200, q: "Какое вещество придает листьям зеленый цвет?", opts: ["Хлорофилл", "Каротин", "Меланин"], correct: 0 }
+        ],
+        "Лесные Тропы": [
+          { val: 100, q: "Инструмент для ориентации по сторонам света?", opts: ["Компас", "Барометр", "Термометр"], correct: 0 },
+          { val: 200, q: "Мягкий зеленый ковер на лесной почве?", opts: ["Мох", "Песок", "Гравий"], correct: 0 }
+        ]
+      },
+      init() {
+        let score = 0;
+        let playedCells = new Set();
+
+        const renderBoard = () => {
+          gameContainer.innerHTML = `
+            <div style="margin-bottom:1rem; font-size:1.2rem; color:var(--gold);">Счет: <strong id="jeop-score">${score}</strong></div>
+            <div class="jeopardy-board">
+              ${this.categories.map(cat => `<div class="jeopardy-category">${cat}</div>`).join('')}
+              ${[0, 1].map(rowIdx => 
+                this.categories.map(cat => {
+                  const qData = this.questions[cat][rowIdx];
+                  const key = `${cat}-${rowIdx}`;
+                  const isPlayed = playedCells.has(key);
+                  return `<div class="jeopardy-cell ${isPlayed ? 'played' : ''}" data-cat="${cat}" data-idx="${rowIdx}">${isPlayed ? '' : qData.val}</div>`;
+                }).join('')
+              ).join('')}
+            </div>
+          `;
+
+          gameContainer.querySelectorAll('.jeopardy-cell:not(.played)').forEach(cell => {
+            cell.addEventListener('click', () => {
+              const cat = cell.dataset.cat;
+              const idx = parseInt(cell.dataset.idx);
+              const key = `${cat}-${idx}`;
+              
+              sounds.playClick();
+              playedCells.add(key);
+              openQuestionModal(cat, idx);
+            });
+          });
+        };
+
+        const openQuestionModal = (cat, idx) => {
+          const item = this.questions[cat][idx];
+          modalContainer.innerHTML = `
+            <div class="modal-overlay">
+              <div class="modal-content">
+                <div style="color:var(--purple-light); font-size:0.9rem; text-align:center;">Категория: ${cat} | Стоимость: ${item.val}</div>
+                <div class="modal-question">${item.q}</div>
+                <div class="modal-answers">
+                  ${item.opts.map((opt, i) => `<button class="modal-ans-btn" data-ans="${i}">${opt}</button>`).join('')}
+                </div>
+              </div>
+            </div>
+          `;
+
+          modalContainer.querySelectorAll('.modal-ans-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const ans = parseInt(btn.dataset.ans);
+              if (ans === item.correct) {
+                sounds.playSparkle();
+                score += item.val;
+              } else {
+                sounds.playVineBoom();
+                score -= item.val;
+              }
+              modalContainer.innerHTML = '';
+              renderBoard();
+
+              if (playedCells.size === 10) {
+                setTimeout(() => showCertificate('Своя Игра', `Финальный счет: ${score} баллов`), 500);
+              }
+            });
+          });
+        };
+
+        renderBoard();
+      }
+    };
+  </script>
+</body>
+</html>
